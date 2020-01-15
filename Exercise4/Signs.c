@@ -56,10 +56,10 @@ Sign* compareLetters(char ch1, char ch2) {
 		signPtr->sign = Star;
 	}
 	else if (checkProperties(closeProperties, ch1, ch2)) {
-		signPtr->sign = Dot;
+		signPtr->sign = TwoDots;
 	}
 	else if (checkProperties(similarProperties, ch1, ch2)) {
-		signPtr->sign = TwoDots;
+		signPtr->sign = Dot;
 	}
 	else {
 		signPtr->sign = Space;
@@ -68,10 +68,24 @@ Sign* compareLetters(char ch1, char ch2) {
 }
 
 int checkProperties(char* properties[], char ch1, char ch2) {
-	int i, numOfProp = sizeof(properties) / sizeof(properties[0]);
+	int i, j, match, numOfProp = sizeof(properties) + 1;
+	size_t propLen = 0;
 	for (i = 0; i < numOfProp; i++)
 	{
-		if (strstr(properties[i], &ch1) != NULL && strstr(properties[i], &ch2) != NULL)
+		match = 0;
+		propLen = strlen(properties[i]);
+		for (j = 0; j < propLen; j++)
+		{
+			if (properties[i][j] == ch1)
+			{
+				match++;
+			}
+			if (properties[i][j] == ch2)
+			{
+				match++;
+			}
+		}
+		if (match == 2)
 		{
 			return 1;
 		}
@@ -85,7 +99,7 @@ int getCount(Sign* signList) {
 		printf("Sign Is NULL! ABORTING!");
 		return -1;
 	}
-	int numOfSigns = sizeof(signList) / sizeof(signList[0]);
+	int numOfSigns = sizeof(signList);
 	int starCounter = 0, twoDotsCounter = 0;
 	for (int i = 0; i < numOfSigns; i++)
 	{
