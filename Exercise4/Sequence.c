@@ -36,4 +36,5 @@ char* createSigns(char* SEQ1, char* SEQ2, int n) {
 		printf("Failed To Allocate Memory for resultSEQ! ABORTING!");
 		return NULL;
 	}
+	//TODO stub
 }
