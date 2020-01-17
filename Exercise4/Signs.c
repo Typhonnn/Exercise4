@@ -3,11 +3,16 @@
 #include <stdlib.h>
 #include <string.h>
 
+//This array of strings holds the groups of close properties sequences.
 char* closeProperties[] = { "STA","NEQK","NDEQ","NHQK","QHRK","MILV","MILF","HY","FYW" };
+//This array of strings holds the groups of similar properties sequences.
 char* similarProperties[] = { "CSA","ATV","SAG","STNK","STPA","SGND","SNDEQK","NDEQHK","NEQHRK","FVLIM","HFY" };
+//numOfSigns will be sized correctly while createSigns works.
+int* numOfSigns, numOfCloseProp = 9, numOfSimilarProp = 11;
 
-Sign* createSigns(char* seq1, char* seq2, int n) {
-	int i;
+//Takes two sequences and compare the two from n'th character of seq1, and write the result to a list of signs compressed into two bits each.
+char* createSigns(char* seq1, char* seq2, int n) {
+	int i, mask = 0, tempSign = 0;
 	char ch1, ch2;
 	if (seq1 == NULL) {
 		printf("SEQ1 Is NULL! ABORTING!");
@@ -17,58 +22,51 @@ Sign* createSigns(char* seq1, char* seq2, int n) {
 		printf("SEQ2 Is NULL! ABORTING!");
 		return NULL;
 	}
-	Sign* resultSigns = calloc(1, sizeof(Sign));
+	size_t seq1Len = strlen(seq1);
+	size_t seq2Len = strlen(seq2);
+	int size = seq2Len / 4 + 1;
+	char* resultSigns = calloc(size, sizeof(char));
 	if (resultSigns == NULL)
 	{
 		printf("Failed To Allocate Memory For resultSigns! ABORTING!");
 		return NULL;
 	}
-	size_t seq1Len = strlen(seq1), seq2Len = strlen(seq2);
-	Sign* reallocSigns = resultSigns;
-	Sign* tempSign = NULL;
+	numOfSigns = calloc(1, sizeof(int)); //
+	if (numOfSigns == NULL)
+	{
+		printf("Failed To Allocate Memory For resultSigns! ABORTING!");
+		return NULL;
+	}
 	for (i = 0; i < (seq1Len - n) && i < seq2Len; i++)
 	{
 		ch1 = seq1[n + i];
 		ch2 = seq2[i];
-		tempSign = compareLetters(ch1, ch2);
-		if (tempSign != NULL)
-		{
-			reallocSigns = resultSigns;
-			resultSigns = realloc(reallocSigns, (i + 1) * sizeof(Sign));
-			if (resultSigns == NULL)
-			{
-				printf("Failed To Reallocate Memory For resultSigns! ABORTING!");
-				return NULL;
-			}
-			resultSigns[i] = *tempSign;
-		}
+		tempSign = compareLetters(ch1, ch2); //tempSign will be compressed into two bits.
+		mask = 3 << (2 * (i % 4));	//Preparing the mask.
+		resultSigns[i / 4] &= ~mask;	//Readying the correct position.
+		resultSigns[i / 4] |= (tempSign & 3) << (2 * (i % 4)); //Placing the two bits in the array.
+		(*numOfSigns)++;
 	}
 	return resultSigns;
 }
 
-Sign* compareLetters(char ch1, char ch2) {
-	Sign* signPtr = calloc(1, sizeof(Sign));
-	if (signPtr == NULL) {
-		printf("Failed To Allocate Memory For Sign! ABORTING!");
-		return NULL;
-	}
+int compareLetters(char ch1, char ch2) {
 	if (ch1 == ch2) {
-		signPtr->sign = Star;
+		return Star;
 	}
-	else if (checkProperties(closeProperties, ch1, ch2)) {
-		signPtr->sign = TwoDots;
+	else if (checkProperties(closeProperties, numOfCloseProp, ch1, ch2)) {
+		return TwoDots;
 	}
-	else if (checkProperties(similarProperties, ch1, ch2)) {
-		signPtr->sign = Dot;
+	else if (checkProperties(similarProperties, numOfSimilarProp, ch1, ch2)) {
+		return Dot;
 	}
 	else {
-		signPtr->sign = Space;
+		return Space;
 	}
-	return signPtr;
 }
 
-int checkProperties(char* properties[], char ch1, char ch2) {
-	int i, j, match, numOfProp = sizeof(properties) + 1;
+int checkProperties(char* properties[], int numOfProp, char ch1, char ch2) {
+	int i, j, match;
 	size_t propLen = 0;
 	for (i = 0; i < numOfProp; i++)
 	{
@@ -93,20 +91,21 @@ int checkProperties(char* properties[], char ch1, char ch2) {
 	return 0;
 }
 
-int getCount(Sign* signList) {
+int getCount(char* signList) {
+	int sign = 0;
 	if (signList == NULL)
 	{
 		printf("Sign Is NULL! ABORTING!");
 		return -1;
 	}
-	int numOfSigns = sizeof(signList);
 	int starCounter = 0, twoDotsCounter = 0;
-	for (int i = 0; i < numOfSigns; i++)
+	for (int i = 0; i < *numOfSigns; i++)
 	{
-		if (signList[i].sign == Star) {
+		sign = (signList[i / 4] >> (2 * (i % 4))) & 3;
+		if (sign == Star) {
 			starCounter++;
 		}
-		else if (signList[i].sign == TwoDots)
+		else if (sign == TwoDots)
 		{
 			twoDotsCounter++;
 		}

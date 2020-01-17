@@ -14,7 +14,7 @@ void main() {
 		printf("seq2 Is NULL! ABORTING!");
 		return;
 	}
-	int result = evaluateDifference(seq1, seq2, 0);
+	int result = evaluateDifference(seq1, seq2, 7);
 	if (result == -1)
 	{
 		printf("result Is -1! ABORTING!");

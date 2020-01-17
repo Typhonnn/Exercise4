@@ -33,7 +33,7 @@ int evaluateDifference(char* seq1, char* seq2, int n) {
 		printf("SEQ2 Is NULL! ABORTING!");
 		return -1;
 	}
-	Sign* signList = createSigns(seq1, seq2, n);
+	char* signList = createSigns(seq1, seq2, n);
 	if (signList == NULL)
 	{
 		printf("signList Is NULL! ABORTING!");
