@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+//Tal Balelty, 312270291
+
 //This array of strings holds the groups of close properties sequences.
 char* closeProperties[] = { "STA","NEQK","NDEQ","NHQK","QHRK","MILV","MILF","HY","FYW" };
 //This array of strings holds the groups of similar properties sequences.
@@ -10,7 +12,10 @@ char* similarProperties[] = { "CSA","ATV","SAG","STNK","STPA","SGND","SNDEQK","N
 //numOfSigns will be sized correctly while createSigns works.
 int* numOfSigns, numOfCloseProp = 9, numOfSimilarProp = 11;
 
-//Takes two sequences and compare the two from n'th character of seq1, and write the result to a list of signs compressed into two bits each.
+//Takes two sequences and compare the two from n'th character of seq1,
+//and write the result to a list of signs compressed into two bits each (tempSign).
+//resultSign - Each Sign takes two bits in the resultSigns array, and the array is built from
+//8-bit chars. Meaning each 8-bit segment can hold 4 Signs.
 char* createSigns(char* seq1, char* seq2, int n) {
 	int i, mask = 0, tempSign = 0;
 	char ch1, ch2;
@@ -45,11 +50,13 @@ char* createSigns(char* seq1, char* seq2, int n) {
 		mask = 3 << (2 * (i % 4));	//Preparing the mask.
 		resultSigns[i / 4] &= ~mask;	//Readying the correct position.
 		resultSigns[i / 4] |= (tempSign & 3) << (2 * (i % 4)); //Placing the two bits in the array.
-		(*numOfSigns)++;
+		(*numOfSigns)++;	//Size of array + 1.
 	}
 	return resultSigns;
 }
 
+//Takes one letter from each sequence and compares them. The returning value comes
+//from enum eSigns.
 int compareLetters(char ch1, char ch2) {
 	if (ch1 == ch2) {
 		return Star;
@@ -65,6 +72,8 @@ int compareLetters(char ch1, char ch2) {
 	}
 }
 
+//Takes a properties array of strings from global definition, and the two chars
+//from compareLetters, and checks if both of the chars are in the same group.
 int checkProperties(char* properties[], int numOfProp, char ch1, char ch2) {
 	int i, j, match;
 	size_t propLen = 0;
@@ -91,6 +100,8 @@ int checkProperties(char* properties[], int numOfProp, char ch1, char ch2) {
 	return 0;
 }
 
+//Takes the resulted sign list after comparison, and calculates the difference
+//between the number of Stars (match) and the number of TwoDots (close properties).
 int getCount(char* signList) {
 	int sign = 0;
 	if (signList == NULL)
@@ -101,7 +112,8 @@ int getCount(char* signList) {
 	int starCounter = 0, twoDotsCounter = 0;
 	for (int i = 0; i < *numOfSigns; i++)
 	{
-		sign = (signList[i / 4] >> (2 * (i % 4))) & 3;
+		//Extracting the two bits of the sign.
+		sign = (signList[i / 4] >> (2 * (i % 4))) & 3; 
 		if (sign == Star) {
 			starCounter++;
 		}
