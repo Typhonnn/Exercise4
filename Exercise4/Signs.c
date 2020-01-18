@@ -11,6 +11,7 @@ char* closeProperties[] = { "STA","NEQK","NDEQ","NHQK","QHRK","MILV","MILF","HY"
 char* similarProperties[] = { "CSA","ATV","SAG","STNK","STPA","SGND","SNDEQK","NDEQHK","NEQHRK","FVLIM","HFY" };
 //numOfSigns will be sized correctly while createSigns works.
 int* numOfSigns, numOfCloseProp = 9, numOfSimilarProp = 11;
+char* signList;
 
 //Takes two sequences and compare the two from n'th character of seq1,
 //and write the result to a list of signs compressed into two bits each (tempSign).
@@ -29,9 +30,9 @@ char* createSigns(char* seq1, char* seq2, int n) {
 	}
 	size_t seq1Len = strlen(seq1);
 	size_t seq2Len = strlen(seq2);
-	int size = seq2Len / 4 + 1;
-	char* resultSigns = calloc(size, sizeof(char));
-	if (resultSigns == NULL)
+	int size = seq2Len / 4 + 1;	//Making enough space for signs.
+	signList = calloc(size, sizeof(char));
+	if (signList == NULL)
 	{
 		printf("Failed To Allocate Memory For resultSigns! ABORTING!");
 		return NULL;
@@ -48,11 +49,11 @@ char* createSigns(char* seq1, char* seq2, int n) {
 		ch2 = seq2[i];
 		tempSign = compareLetters(ch1, ch2); //tempSign will be compressed into two bits.
 		mask = 3 << (2 * (i % 4));	//Preparing the mask.
-		resultSigns[i / 4] &= ~mask;	//Readying the correct position.
-		resultSigns[i / 4] |= (tempSign & 3) << (2 * (i % 4)); //Placing the two bits in the array.
+		signList[i / 4] &= ~mask;	//Readying the correct position.
+		signList[i / 4] |= (tempSign & 3) << (2 * (i % 4)); //Placing the two bits in the array.
 		(*numOfSigns)++;	//Size of array + 1.
 	}
-	return resultSigns;
+	return signList;
 }
 
 //Takes one letter from each sequence and compares them. The returning value comes
@@ -102,9 +103,9 @@ int checkProperties(char* properties[], int numOfProp, char ch1, char ch2) {
 
 //Takes the resulted sign list after comparison, and calculates the difference
 //between the number of Stars (match) and the number of TwoDots (close properties).
-int getCount(char* signList) {
+int getCount(char* signs) {
 	int sign = 0;
-	if (signList == NULL)
+	if (signs == NULL)
 	{
 		printf("Sign Is NULL! ABORTING!");
 		return -1;
@@ -113,7 +114,7 @@ int getCount(char* signList) {
 	for (int i = 0; i < *numOfSigns; i++)
 	{
 		//Extracting the two bits of the sign.
-		sign = (signList[i / 4] >> (2 * (i % 4))) & 3; 
+		sign = (signs[i / 4] >> (2 * (i % 4))) & 3; 
 		if (sign == Star) {
 			starCounter++;
 		}
@@ -123,4 +124,57 @@ int getCount(char* signList) {
 		}
 	}
 	return abs(starCounter - twoDotsCounter);
+}
+
+char* signsToString(char* signs) {
+	int i, sign = -1;
+	if (signs == NULL){
+		return NULL;
+	}
+	if (numOfSigns == NULL) {
+		return NULL;
+	}
+	int size = *numOfSigns + 1;
+	char* string = calloc(size, sizeof(char));
+	if (string == NULL)
+	{
+		printf("Failed To Allocate Memory For string! ABORTING!");
+		return NULL;
+	}
+	string[0] = '\0';
+	for ( i = 0; i < size - 1; i++)
+	{
+		sign = (signs[i / 4] >> (2 * (i % 4))) & 3;
+		strcat_s(string, size, intToChar(sign));
+	}
+	return string;
+}
+
+char* intToChar(int sign) {
+	char* appSign = calloc(1, sizeof(char));
+	if (appSign == NULL)
+	{
+		printf("Failed To Allocate Memory For appSign! ABORTING!");
+		return NULL;
+	}
+	if (sign == Star)
+	{
+		appSign = "*";
+		return appSign;
+	}
+	else if (sign == TwoDots)
+	{
+		appSign = ":";
+		return appSign;
+	}
+	else if (sign == Dot)
+	{
+		appSign = ".";
+		return appSign;
+	}
+	else
+	{
+		appSign = " ";
+		return appSign;
+	}
 }

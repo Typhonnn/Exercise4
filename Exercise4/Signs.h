@@ -3,6 +3,8 @@
 //Specifies the only solutions available.
 enum eSigns { Star, TwoDots, Dot, Space };
 
+char* signList;
+
 //Takes two sequences and compare the two from n'th character of seq1,
 //and write the result to a list of signs compressed into two bits each (tempSign).
 //resultSign - Each Sign takes two bits in the resultSigns array, and the array is built from
@@ -20,3 +22,7 @@ int checkProperties(char* properties[], int numOfProp, char ch1, char ch2);
 //Takes the resulted sign list after comparison, and calculates the difference
 //between the number of Stars (match) and the number of TwoDots (close properties).
 int getCount(char* signList);
+
+char* signsToString(char* signs);
+
+char* intToChar(int sign);
