@@ -1,12 +1,13 @@
 #include "Package.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 #define PRINT_SEQUENCES
 
 #ifdef PRINT_SEQUENCES
-#define PRINT(seq1,seq2,signs,count,skip) printf("%s\n%s\n%s\nThe Difference is: %d\n",seq1,seq2,signs,count);
+#define PRINT(seq1,seq2,signs,count,skip) printf("%s\n%s%s\n%s%s\nThe Difference is: %d\n",seq1,skip,seq2,skip,signs,count);
 #endif
-	
+
 int evaluateDifference(char* seq1, char* seq2, int n) {
 	if (seq1 == NULL) {
 		printf("SEQ1 Is NULL! ABORTING!");
@@ -24,6 +25,21 @@ int evaluateDifference(char* seq1, char* seq2, int n) {
 	}
 	int count = getCount(signs);
 	return count;
+}
+
+char* getSkip(int n) {
+	char* skip = calloc(n + 1, sizeof(char));
+	if (skip == NULL)
+	{
+		printf("Failed To Allocate Memory For skip! ABORTING!");
+		return NULL;
+	}
+	for (int i = 0; i < n; i++)
+	{
+		skip[i] = ' ';
+	}
+	skip[n] = '\0';
+	return skip;
 }
 
 void main() {
@@ -46,5 +62,5 @@ void main() {
 		printf("evaluateDifference Failed! ABORTING!");
 		return;
 	}
-	PRINT(seq1, seq2, signsToString(signList), count, n);
+	PRINT(seq1, seq2, signsToString(signList), count, getSkip(n));
 }
