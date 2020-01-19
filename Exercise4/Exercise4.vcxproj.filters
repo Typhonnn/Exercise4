@@ -24,6 +24,9 @@
     <ClCompile Include="Signs.c">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Package.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Signs.h">

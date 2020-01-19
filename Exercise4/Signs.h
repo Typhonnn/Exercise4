@@ -23,6 +23,8 @@ int checkProperties(char* properties[], int numOfProp, char ch1, char ch2);
 //between the number of Stars (match) and the number of TwoDots (close properties).
 int getCount(char* signList);
 
+//Takes the two bit represented signs and returns a string of all signs as actual characters.
 char* signsToString(char* signs);
 
+//Takes a sign and converts it into an actual character.
 char* intToChar(int sign);

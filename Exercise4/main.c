@@ -2,45 +2,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+//If defined this marco prints all the required data.
 #define PRINT_SEQUENCES
 
 #ifdef PRINT_SEQUENCES
 #define PRINT(seq1,seq2,signs,count,skip) printf("%s\n%s%s\n%s%s\nThe Difference is: %d\n",seq1,skip,seq2,skip,signs,count);
+#else
+#define PRINT(seq1,seq2,signs,count,skip);
 #endif
-
-int evaluateDifference(char* seq1, char* seq2, int n) {
-	if (seq1 == NULL) {
-		printf("SEQ1 Is NULL! ABORTING!");
-		return -1;
-	}
-	if (seq2 == NULL) {
-		printf("SEQ2 Is NULL! ABORTING!");
-		return -1;
-	}
-	char* signs = createSigns(seq1, seq2, n);
-	if (signs == NULL)
-	{
-		printf("signList Is NULL! ABORTING!");
-		return -1;
-	}
-	int count = getCount(signs);
-	return count;
-}
-
-char* getSkip(int n) {
-	char* skip = calloc(n + 1, sizeof(char));
-	if (skip == NULL)
-	{
-		printf("Failed To Allocate Memory For skip! ABORTING!");
-		return NULL;
-	}
-	for (int i = 0; i < n; i++)
-	{
-		skip[i] = ' ';
-	}
-	skip[n] = '\0';
-	return skip;
-}
 
 void main() {
 	int n = 7;
@@ -62,5 +31,6 @@ void main() {
 		printf("evaluateDifference Failed! ABORTING!");
 		return;
 	}
+	//give the macro the paramaters.
 	PRINT(seq1, seq2, signsToString(signList), count, getSkip(n));
 }

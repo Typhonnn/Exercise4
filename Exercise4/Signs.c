@@ -126,6 +126,7 @@ int getCount(char* signs) {
 	return abs(starCounter - twoDotsCounter);
 }
 
+//Takes the two bit represented signs and returns a string of all signs as actual characters.
 char* signsToString(char* signs) {
 	int i, sign = -1;
 	if (signs == NULL){
@@ -150,6 +151,7 @@ char* signsToString(char* signs) {
 	return string;
 }
 
+//Takes a sign and converts it into an actual character.
 char* intToChar(int sign) {
 	char* appSign = calloc(1, sizeof(char));
 	if (appSign == NULL)

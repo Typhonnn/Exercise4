@@ -139,6 +139,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.c" />
+    <ClCompile Include="Package.c" />
     <ClCompile Include="Sequence.c" />
     <ClCompile Include="Signs.c" />
   </ItemGroup>
