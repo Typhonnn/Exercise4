@@ -11,15 +11,20 @@
 #define PRINT(seq1,seq2,signs,count,skip);
 #endif
 
-void main() {
+void main(int argc, char* argv[]) {
+	//Checks to see if two file names were provided.
+	if (argc != 3) {
+		printf("Must provide atleast 2 parameters! ABORTING!");
+		return;
+	}
 	int n = 7;
-	char* seq1 = createSequence("DNN1.txt");
+	char* seq1 = createSequence(argv[1]);
 	if (seq1 == NULL)
 	{
 		printf("seq1 Is NULL! ABORTING!");
 		return;
 	}
-	char* seq2 = createSequence("DNN2.txt");
+	char* seq2 = createSequence(argv[2]);
 	if (seq2 == NULL)
 	{
 		printf("seq2 Is NULL! ABORTING!");
